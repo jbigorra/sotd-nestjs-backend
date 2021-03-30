@@ -18,10 +18,11 @@ export class FileBasedUserRepository implements IUserRepository {
   private readonly _filePath = 'user-db.json';
 
   constructor() {
-    from(this._init()).pipe(tap(console.log)).subscribe((users: string) => {
-      if (!users) users = '[]';
-      this._users = JSON.parse(users);
-    });
+    from(this._init())
+      .subscribe((users: string) => {
+        if (!users) users = '[]';
+        this._users = JSON.parse(users);
+      });
   }
 
   add(user: IUser): Observable<IUser | Error> {
