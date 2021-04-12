@@ -12,11 +12,6 @@ interface ISignUpRequest {
   passwordConfirmation: string;
 }
 
-interface ISignInRequest {
-  email: string;
-  password: string;
-}
-
 interface UserInfoResponse {
   id: number,
   username: string;

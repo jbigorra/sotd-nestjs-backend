@@ -18,9 +18,7 @@ export class FileBasedUserRepository implements IUserRepository {
   private _users: IUserModel[];
   private readonly _filePath = 'user-db.json';
 
-  constructor(filePath) {
-    this._filePath = filePath;
-
+  constructor() {
     from(this._init())
       .subscribe((users: string) => {
         if (!users) users = '[]';
