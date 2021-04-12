@@ -1,14 +1,20 @@
 import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { IUser } from '../domain/models/user.model';
-import { IUserRepository, IUserRepositoryToken } from '../persistence/file-base-user.repository';
+import { ValidatedUser } from 'src/auth/auth.service';
+import { IUserModel } from '../domain/models/user.model';
+import { IUserRepository, IUserRepositoryToken } from '../persistence/file-based-user.repository';
 
 interface ISignUpRequest {
   username: string;
   email: string;
   password: string;
   passwordConfirmation: string;
+}
+
+interface ISignInRequest {
+  email: string;
+  password: string;
 }
 
 interface UserInfoResponse {
@@ -30,8 +36,8 @@ export class UserController {
   @Post('/signup')
   signup(@Body() body: ISignUpRequest): Observable<UserInfoResponse> {
     const { passwordConfirmation, ...rest } = body;
-    return this.userRepository.add(rest as IUser).pipe(
-      map((user: IUser) => {
+    return this.userRepository.add(rest as IUserModel).pipe(
+      map((user: IUserModel) => {
         const { password, ...rest } = user;
         return rest as UserInfoResponse;
       })

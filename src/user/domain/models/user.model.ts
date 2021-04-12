@@ -1,5 +1,5 @@
-export interface IUser {
-  id?: number,
+export interface IUserModel {
+  id: number,
   username: string,
   email: string,
   password: string,
