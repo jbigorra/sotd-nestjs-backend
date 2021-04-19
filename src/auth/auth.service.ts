@@ -20,7 +20,7 @@ export class AuthService {
   private readonly userRepository: IUserRepository;
   @Inject() private readonly jwtService: JwtService;
 
-  validateUser(email: string, pass: string): Observable<ValidatedUser> {
+  async validateUser(email: string, pass: string): Promise<ValidatedUser> {
     return this.userRepository.findByEmail(email).pipe(
       map((user) => {
         if (user.password === pass) {
@@ -29,20 +29,14 @@ export class AuthService {
         }
         throw new UnauthorizedException();
       }),
-    );
+    ).toPromise();
   }
 
-  login(user: ValidatedUser): Observable<JwtAuthUser> {
-    const { id } = user;
-    const payload = { user, sub: id };
+  login(user: ValidatedUser): Promise<JwtAuthUser> {
+    const payload = { user, sub: user.id };
 
-    return from(this.jwtService.signAsync(payload)).pipe(
-      map(
-        (jwtString) =>
-          ({
-            accessToken: jwtString,
-          } as JwtAuthUser),
-      ),
+    return this.jwtService.signAsync(payload).then(
+      (jwtString) => ({ accessToken: jwtString }),
     );
   }
 }
