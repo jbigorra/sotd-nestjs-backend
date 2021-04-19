@@ -1,7 +1,8 @@
-import { Body, Controller, Get, Inject, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Inject, Param, Post, Request, UseGuards } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ValidatedUser } from 'src/auth/auth.service';
+import { JwtAuthGuard } from 'src/Guards/jwt-auth.guard';
 import { IUserModel } from '../domain/models/user.model';
 import { IUserRepository, IUserRepositoryToken } from '../persistence/file-based-user.repository';
 
@@ -23,9 +24,10 @@ export class UserController {
 
   @Inject(IUserRepositoryToken) private readonly userRepository: IUserRepository;
 
-  @Get(':id')
-  get(@Param('id') id: number): Observable<UserInfoResponse> {
-    return of({ id, username: 'jbigorra', email: 'juanchoibf@gmail.com' });
+  @Get('/me')
+  @UseGuards(JwtAuthGuard)
+  get(@Request() req: { user: ValidatedUser }): Observable<UserInfoResponse> {
+    return of(req.user);
   }
 
   @Post('/signup')
