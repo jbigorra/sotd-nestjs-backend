@@ -33,8 +33,8 @@ export class AuthService {
   }
 
   login(user: ValidatedUser): Observable<JwtAuthUser> {
-    const { id, ...rest } = user;
-    const payload = { ...rest, sub: id };
+    const { id } = user;
+    const payload = { user, sub: id };
 
     return from(this.jwtService.signAsync(payload)).pipe(
       map(
